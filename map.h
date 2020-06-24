@@ -26,6 +26,37 @@ private:
 	Node<Tk, Tv>* findMax(Node<Tk, Tv>*);
 	void erase(Node<Tk, Tv>*&, Tk);
 public:
+	class iterator {
+		map<Tk, Tv>* _mymap;
+		Node<Tk, Tv>* current;
+	public:
+		iterator(map<Tk, Tv>* mymap,Node<Tk,Tv>* node) :_mymap(mymap),current(node) {}
+		iterator operator++() {
+			current = _mymap->next(current);
+			return *this;
+		}
+		iterator operator++(int v) {
+			current = _mymap->next(current);
+			return *this;
+		}
+		iterator operator--() {
+			current = _mymap->prev(current);
+			return *this;
+		}
+		iterator operator--(int v) {
+			current = _mymap->prev(current);
+			return *this;
+		}
+		std::pair<Tk, Tv> operator*() {
+			return std::pair<Tk, Tv>(current->key, current->val);
+		}
+		bool operator==(const iterator& rhs) {
+			return current == rhs.current;
+		}
+		bool operator!=(const iterator& rhs) {
+			return current != rhs.current;
+		}
+	};
 	map() {
 		head = new Node<Tk, Tv>(Tk{}, Tv{});
 		head->is_nil = 1;
@@ -37,7 +68,9 @@ public:
 	Node<Tk, Tv>* prev(Node<Tk, Tv>* t);
 
 	Node<Tk, Tv>* begin();
+	map<Tk,Tv>::iterator begin(int);
 	Node<Tk, Tv>* end();
+	map<Tk, Tv >::iterator end(int);
 
 };
 template<typename Tk, typename Tv>
@@ -130,7 +163,7 @@ Node<Tk, Tv>* map<Tk, Tv>::findMin(Node<Tk, Tv>* t) {
 template<typename Tk, typename Tv>
 Node<Tk, Tv>* map<Tk, Tv>::findMax(Node<Tk, Tv>* t) {
 	if (t==nullptr || t->right == nullptr) return t;
-	else return findMin(t->right);
+	else return findMax(t->right);
 
 }
 template <typename Tk, typename Tv>
@@ -175,4 +208,13 @@ std::string map<Tk, Tv>::inorder() {
 	std::stringstream ss;
 	inorder(head->parent,ss);
 	return ss.str();
+}
+template <typename Tk,typename Tv>
+typename map<Tk, Tv>::iterator map<Tk, Tv>::begin(int x) {
+	return iterator(this,head->left);
+}
+
+template <typename Tk, typename Tv>
+typename map<Tk, Tv>::iterator map<Tk, Tv>::end(int x) {
+	return iterator(this, head);
 }

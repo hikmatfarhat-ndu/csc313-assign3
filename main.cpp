@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <exception>
-//#include <map>
 #include <vector>
 #include <string>
 #include "map.h"
@@ -10,39 +9,24 @@
 
 int main(int argc, const char* argv[])
 {
-    
-
-    ::map<int, double > m;
-    m.insert({ 10, 90 });
-    m.insert({ 20,92.4 });
-    m.insert({ 30,44 });
-    m.insert({ 25,54 });
-    m.insert({ 5,44 });
-    m.insert({ 8,44 });
-    std::string ri=m.inorder();
-    std::cout<<ri;
-   //std::cout << "\n-----------------\n";
-   // //m["person4"] = 15;
-  /*  auto itr=m.begin();
-    while (itr != m.end()) {
-        std::cout << itr->key << "," << itr->val << std::endl;
-        itr = m.next(itr);
-    }*/
-    ///m.erase("person2");
-   /* std::cout << "\n after delete\n";
-    itr = m.end();
-    
-    while (itr!=m.begin()) {
-        itr = m.prev(itr);
-        std::cout << itr->key << "," << itr->val << std::endl;
-    }
-    */
-   /*while(itr!=m.end()) {
-        auto [x, y] = *itr;
-        std::cout << x << "==>" << y << std::endl;
+    std::vector<std::pair<std::string, double>> v{ { "student5", 90 },
+    { "student2",92.4 },{ "student1",44 },{ "student4",54 },{ "student6",44 },
+    { "student3",44 } };
+    map<std::string, double> m;
+    for (auto& x : v)
+        m.insert(x);
+    map<std::string, double>::iterator itr = m.begin(10);
+    std::vector<std::string> r1;
+    while (itr != m.end(10)) {
+        r1.push_back((*itr).first);
         ++itr;
-    }*/
-
-    return 0;
+    }
+    std::vector<std::string> r2;
+    itr = m.end(10);
+    while (itr != m.begin(10)) {
+        itr--;
+        r2.push_back((*itr).first);
+    }
+    std::reverse(r2.begin(), r2.end());
 }
 
