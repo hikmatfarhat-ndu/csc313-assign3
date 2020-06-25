@@ -8,7 +8,7 @@
 #include "catch.hpp"
 
 
-TEST_CASE("Test1","1"){
+TEST_CASE("iterator1","1"){
 	std::vector<std::pair<std::string,double>> v {{ "student5", 90 },
     { "student2",92.4 },{ "student1",44 },{ "student4",54 },{ "student6",44 },
     { "student3",44 }};
