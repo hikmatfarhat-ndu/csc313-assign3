@@ -49,6 +49,7 @@ public:
 	//notice the dummy integer to distinguish
 	// between begin that returns a node* and the 
 	// one that returns an iterator. The same for end
+	Node<Tk, Tv>& operator[](Tk );
 	Node<Tk, Tv>* begin();
 	map<Tk,Tv>::iterator begin(int);
 	Node<Tk, Tv>* end();
@@ -56,6 +57,16 @@ public:
 
 };
 
+//returns a reference to the node
+// having key. If the node does
+//not exist creates one with a default 
+//value and return a reference to it
+template<typename Tk,typename Tv>
+Node<Tk, Tv>& map<Tk, Tv>::operator[](Tk key) {
+	//TODO: write your code here
+	//obviously replace head
+	return head;
+}
 // Takes a dummy interger as input
 // to distinguish it from begin that returns
 // a node pointer. Don't change
@@ -63,7 +74,7 @@ template<typename Tk,typename Tv>
 typename map<Tk, Tv>::iterator map<Tk,Tv>::begin(int v) {
 	return iterator(this,head->left);
 }
-// Takes a dummy interger as input
+// Takes a dummy integer as input
 // to distinguish it from end that returns
 // a node pointer. Don't change
 template<typename Tk, typename Tv>
