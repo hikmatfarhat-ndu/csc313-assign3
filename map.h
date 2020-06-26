@@ -175,7 +175,7 @@ void map<Tk, Tv>::inorder(const Node<Tk, Tv>* t,std::ostream& os) {
 
 	if (t == nullptr)return;
 	inorder(t->left,os);
-	os << t->key << "=>";
+	os << t->_myval.first << "=>";
 	inorder(t->right,os);
 
 }
