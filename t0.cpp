@@ -8,7 +8,7 @@
 #include "catch.hpp"
 
 
-TEST_CASE("Test0", "0") {
+TEST_CASE("check_insert_inorder", "0") {
 	std::vector<std::pair<std::string,int>> v { {"one",90},{"two",94},{"three",88},{"four",65}};
 	map<std::string,double> m;
 	for(auto& x:v)
@@ -22,15 +22,15 @@ TEST_CASE("Test0", "0") {
 	REQUIRE(r1==r2);
 
 }
-TEST_CASE("Test1", "1") {
+TEST_CASE("check_next_prev", "1") {
 	std::vector<std::pair<std::string, int>> v{ {"one",90},{"two",94},{"three",88},{"four",65} };
 	map<std::string, double> m;
 	for (auto& x : v)
 		m.insert(x);
 	std::string r1 = "";
-	auto itr = m.begin();
-	while (itr != m.end()) {
-		r1 += itr->key;
+	auto itr = m.begin(10);
+	while (itr != m.end(10)) {
+		r1 += ;
 		itr = m.next(itr);
 	}
 	/* sort */

@@ -6,14 +6,13 @@
 #include <stdexcept>
 template<typename Tk, typename Tv>
 struct Node {
-	Tk key;
-	Tv val;
+	std::pair<Tk, Tv> _myval;
 	Node* parent;
 	Node* left;
 	Node* right;
-	char is_nil = 0;
+	char is_nil;
 	Node(Tk k, Tv v, Node* p = nullptr, Node* l = nullptr, Node* r = nullptr)
-		:key(k), val(v), parent(p), left(l), right(r) ,is_nil(0){}
+		:_myval(k,v), parent(p), left(l), right(r) ,is_nil(0){}
 };
 
 template<typename Tk, typename Tv>
@@ -22,24 +21,30 @@ private:
 	Node<Tk, Tv>* head;
 	void insert(Node<Tk, Tv>*&, std::pair<Tk, Tv>);
 	void inorder(const Node<Tk, Tv>*,std::ostream&);
+	Node<Tk, Tv>* find(Tk, Node<Tk, Tv>*);
 	Node<Tk, Tv>* findMin(Node<Tk, Tv>*);
 	Node<Tk, Tv>* findMax(Node<Tk, Tv>*);
 	void erase(Node<Tk, Tv>*&, Tk);
 public:
 	// Implement the iterator class here
-
 	class iterator {
+		//don't change member elements
 		map<Tk, Tv>* _mymap;
 		Node<Tk, Tv>* current;
 	public:
+		//don't change the ctor
 		iterator(map<Tk, Tv>* mymap, Node<Tk, Tv>* node)
 			:_mymap(mymap), current(node) {}
 		//implement here the usual operators 
 		// for the iterator, i.e.: ++,--, ==,!=,*,->
 	};
+	//don't change the default ctor
 	map() {
 		head = new Node<Tk, Tv>(Tk{}, Tv{});
 		head->is_nil = 1;
+		head->parent = head;
+		head->left = head;
+		head->right = head;
 	}
 	void insert(std::pair<Tk, Tv>);
 	std::string inorder();
@@ -49,25 +54,40 @@ public:
 	//notice the dummy integer to distinguish
 	// between begin that returns a node* and the 
 	// one that returns an iterator. The same for end
-	Node<Tk, Tv>* begin();
-	map<Tk,Tv>::iterator begin(int);
-	Node<Tk, Tv>* end();
-	map<Tk, Tv >::iterator end(int);
+	Node<Tk, Tv>* begin(int);
+	iterator begin();
+	Node<Tk, Tv>* end(int );
+	iterator end();
+	iterator find(Tk);
+	Tv& operator[](Tk);
 
 };
 
+
+
 // Takes a dummy interger as input
 // to distinguish it from begin that returns
-// a node pointer. Don't change
-template<typename Tk,typename Tv>
-typename map<Tk, Tv>::iterator map<Tk,Tv>::begin(int v) {
-	return iterator(this,head->left);
+// an iterator . Don't change
+
+template<typename Tk, typename Tv>
+Node<Tk, Tv>* map<Tk, Tv>::begin(int d) {
+	return head->left;
 }
 // Takes a dummy interger as input
 // to distinguish it from end that returns
-// a node pointer. Don't change
+// an iterator. Don't change
 template<typename Tk, typename Tv>
-typename map<Tk, Tv>::iterator map<Tk,Tv>::end(int v) {
+Node<Tk, Tv>* map<Tk, Tv>::end(int d) {
+	return head;
+}
+// returns an iterator. Don't change.
+template<typename Tk,typename Tv>
+typename map<Tk, Tv>::iterator map<Tk,Tv>::begin() {
+	return iterator(this,head->left);
+}
+// returns an iterator. Don't change
+template<typename Tk, typename Tv>
+typename map<Tk, Tv>::iterator map<Tk,Tv>::end() {
 	return iterator(this, head);
 }
 
@@ -77,7 +97,6 @@ void map<Tk,Tv>::insert(Node<Tk, Tv>*&, std::pair<Tk, Tv>) {
 	//TODO: write your code here
 
 }
-
 
 //implement this method
 template<typename Tk,typename Tv>
@@ -98,10 +117,40 @@ template <typename Tk, typename Tv>
 void map<Tk,Tv>::erase(Node<Tk, Tv>*&, Tk) {
    //TODO: write your code here
 }
+//implement this method
+// the private version of find
+// returns a node pointer instead of iterator
+// for the public version
+template<typename Tk, typename Tv>
+Node<Tk, Tv>* map<Tk, Tv>::find(Tk key, Node<Tk, Tv>* t) {
+	//TODO: write your code here
+	//remove return head
+	 return head;
 
+}
+
+//implement this method
+//Returns an iterator to the element that contains the 
+// given key. Returns end() if key not found
+template <typename Tk, typename Tv>
+typename map<Tk,Tv>::iterator map<Tk, Tv>::find(Tk key) {
+	//TODO: write your code here
+	return end();
+}
+//implement this method
+// returns a reference to the value given a key
+// used as an assoicative array. If key not found
+// create
+template<typename Tk,typename Tv>
+Tv& map<Tk, Tv>::operator[](Tk key) {
+	//TODO: write your code here
+	// remove the return value below
+	return *(new Tv{});
+}
 //given a node pointer t returns the pointer
 // to the next node in the inorder traversal
 //implement this method
+// Note that the next of "last" node is the head
 template <typename Tk,typename Tv>
 Node<Tk, Tv>* map<Tk, Tv>::next(Node<Tk, Tv>* t) {
 	//TODO: write your code here
@@ -131,18 +180,6 @@ void map<Tk, Tv>::inorder(const Node<Tk, Tv>* t,std::ostream& os) {
 
 }
 
-
-// begin that returns a node pointer. Don't change
-template<typename Tk, typename Tv>
-Node<Tk, Tv>* map<Tk, Tv>::begin() {
-	return head->left;
-}
-
-// end that returns a node pointer. Don't change
-template<typename Tk, typename Tv>
-Node<Tk, Tv>* map<Tk, Tv>::end() {
-	return head;
-}
 
 //This is the public insert.Don't change
 template<typename Tk, typename Tv>
