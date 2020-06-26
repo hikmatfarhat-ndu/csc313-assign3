@@ -6,14 +6,13 @@
 #include <stdexcept>
 template<typename Tk, typename Tv>
 struct Node {
-	Tk key;
-	Tv val;
+	std::pair<Tk,Tv> _myval;
 	Node* parent;
 	Node* left;
 	Node* right;
 	char is_nil = 0;
 	Node(Tk k, Tv v, Node* p = nullptr, Node* l = nullptr, Node* r = nullptr)
-		:key(k), val(v), parent(p), left(l), right(r) ,is_nil(0){}
+		:_myval(k,v), parent(p), left(l), right(r) ,is_nil(0){}
 };
 
 template<typename Tk, typename Tv>
@@ -24,22 +23,54 @@ private:
 	void inorder(const Node<Tk, Tv>*,std::ostream&);
 	Node<Tk, Tv>* findMin(Node<Tk, Tv>*);
 	Node<Tk, Tv>* findMax(Node<Tk, Tv>*);
-	void erase(Node<Tk, Tv>*&, Tk);
+	Node<Tk, Tv>* find(Tk, Node<Tk, Tv>*);
+	void erase(Node<Tk, Tv>* &, Tk);
+
 public:
 	// Implement the iterator class here
 
 	class iterator {
 		map<Tk, Tv>* _mymap;
-		Node<Tk, Tv>* current;
+		Node<Tk, Tv>* _current;
+
 	public:
-		iterator(map<Tk, Tv>* mymap, Node<Tk, Tv>* node)
-			:_mymap(mymap), current(node) {}
-		//implement here the usual operators 
-		// for the iterator, i.e.: ++,--, ==,!=,*,->
+		iterator(map<Tk, Tv>* mymap,Node<Tk,Tv>* node) :_mymap(mymap),_current(node) {}
+		iterator operator++() {
+			_current = _mymap->next(_current);
+			return *this;
+		}
+		iterator operator++(int v) {
+			_current = _mymap->next(_current);
+			return *this;
+		}
+		iterator operator--() {
+			_current = _mymap->prev(_current);
+			return *this;
+		}
+		iterator operator--(int v) {
+			_current = _mymap->prev(_current);
+			return *this;
+		}
+		std::pair< Tk,Tv>* operator->() {
+			return std::addressof(_current->_myval);
+		}
+		std::pair<Tk, Tv>& operator*() {
+			
+			return _current->_myval;
+		}
+		bool operator==(const iterator& rhs) {
+			return _current == rhs._current;
+		}
+		bool operator!=(const iterator& rhs) {
+			return _current != rhs._current;
+		}
 	};
 	map() {
 		head = new Node<Tk, Tv>(Tk{}, Tv{});
 		head->is_nil = 1;
+		head->parent = head;
+		head->left = head;
+		head->right = head;
 	}
 	void insert(std::pair<Tk, Tv>);
 	std::string inorder();
@@ -54,90 +85,36 @@ public:
 	map<Tk,Tv>::iterator begin(int);
 	Node<Tk, Tv>* end();
 	map<Tk, Tv >::iterator end(int);
-
+	iterator find(Tk);
+	Tv& operator[](Tk);
 };
 
-//returns a reference to the node
-// having key. If the node does
-//not exist creates one with a default 
-//value and return a reference to it
-template<typename Tk,typename Tv>
-Node<Tk, Tv>& map<Tk, Tv>::operator[](Tk key) {
-	//TODO: write your code here
-	//obviously replace head
-	return head;
+template <typename Tk,typename Tv>
+Tv & map<Tk, Tv>::operator[](Tk key) {
+	Node<Tk,Tv>* res=find(key,head->parent);
+	return (res->_myval).second;
 }
-// Takes a dummy interger as input
-// to distinguish it from begin that returns
-// a node pointer. Don't change
-template<typename Tk,typename Tv>
-typename map<Tk, Tv>::iterator map<Tk,Tv>::begin(int v) {
-	return iterator(this,head->left);
-}
-// Takes a dummy integer as input
-// to distinguish it from end that returns
-// a node pointer. Don't change
 template<typename Tk, typename Tv>
-typename map<Tk, Tv>::iterator map<Tk,Tv>::end(int v) {
-	return iterator(this, head);
-}
+Node<Tk,Tv>* map<Tk, Tv>::find(Tk key,Node<Tk,Tv>* t) {
+	if (t == nullptr) return head;
+	if (key == t->_myval.first)return t;
+	else if (key < t->_myval.first)return find(key,t->left);
+	else return find(key,t->right);
 
-//implement this method
+}
 template<typename Tk,typename Tv>
-void map<Tk,Tv>::insert(Node<Tk, Tv>*&, std::pair<Tk, Tv>) {
-	//TODO: write your code here
+typename map<Tk, Tv>::iterator map<Tk, Tv>::find(Tk key) {
+	auto node=find(key, head->parent);
+	return iterator(this, node);
 
 }
 
-
-//implement this method
-template<typename Tk,typename Tv>
-Node<Tk, Tv>* map<Tk,Tv>::findMin(Node<Tk, Tv>*) {
-	//TODO: write you code here
-	//Obviously replace head
-	return head;
-}
-//implement this method
-template <typename Tk,typename Tv>
-Node<Tk, Tv>* map<Tk, Tv>::findMax(Node<Tk, Tv>*) {
-	//TODO: write your code here. 
-	//Obviously replace head
-	return head;
-}
-//implement this method
-template <typename Tk, typename Tv>
-void map<Tk,Tv>::erase(Node<Tk, Tv>*&, Tk) {
-   //TODO: write your code here
-}
-
-//given a node pointer t returns the pointer
-// to the next node in the inorder traversal
-//implement this method
-template <typename Tk,typename Tv>
-Node<Tk, Tv>* map<Tk, Tv>::next(Node<Tk, Tv>* t) {
-	//TODO: write your code here
-	//obviously replace head
-	return head;
-}
-//given a node pointer t returns the pointer
-// to the previous node in the inorder traversal
-//implement this method
-template <typename Tk, typename Tv>
-Node<Tk, Tv>* map<Tk,Tv>::prev(Node<Tk, Tv>* t) {
-	//TODO: write your code here
-	//obviously replace head
-	return head;
-}
-
-//prints the inorder traversal to
-//the chosen output stream
-// Don't change
 template<typename Tk, typename Tv>
 void map<Tk, Tv>::inorder(const Node<Tk, Tv>* t,std::ostream& os) {
 
 	if (t == nullptr)return;
 	inorder(t->left,os);
-	os << t->key << "=>";
+	os << t->_myval.first << "=>";
 	inorder(t->right,os);
 
 }
@@ -154,11 +131,33 @@ template<typename Tk, typename Tv>
 Node<Tk, Tv>* map<Tk, Tv>::end() {
 	return head;
 }
+template<typename Tk, typename Tv>
+void map<Tk, Tv>::insert(Node<Tk, Tv>*& t, std::pair<Tk, Tv> p) {
+	if (t == nullptr) {
+		std::cout << "error\n"; return;
+	}
+	if (p.first > t->_myval.first) {
+		if (t->right == nullptr) {
+			t->right = new Node<Tk, Tv>(p.first, p.second, t);
+			if (head->right == t)head->right = t->right;
+		}
+		else insert(t->right, p);
+
+	}
+	else {
+		if (t->left == nullptr) {
+			t->left = new Node<Tk, Tv>(p.first, p.second, t);
+			if (head->left == t)head->left = t->left;
+		}
+		else insert(t->left, p);
+
+	}
+}
 
 //This is the public insert.Don't change
 template<typename Tk, typename Tv>
 void map<Tk, Tv>::insert(std::pair<Tk, Tv> v) {
-	if (head->parent == nullptr) {
+	if (head->parent == head) {
 		head->parent = new Node < Tk, Tv>(v.first, v.second, head);
 		head->left = head->parent;
 		head->right = head->parent;
@@ -166,7 +165,58 @@ void map<Tk, Tv>::insert(std::pair<Tk, Tv> v) {
 	else insert(head->parent, v);
 }
 
-// This is the public erase. Don't change
+template<typename Tk, typename Tv>
+Node<Tk, Tv>* map<Tk, Tv>::findMin(Node<Tk, Tv>* t) {
+	if (t==nullptr || t->left == nullptr) return t;
+	else return findMin(t->left);
+
+}
+
+template<typename Tk, typename Tv>
+Node<Tk, Tv>* map<Tk, Tv>::findMax(Node<Tk, Tv>* t) {
+	if (t==nullptr || t->right == nullptr) return t;
+	else return findMax(t->right);
+
+}
+template <typename Tk,typename Tv>
+bool constexpr is_leaf(Node<Tk, Tv>*& t) {
+	if (t->left == nullptr && t->right == nullptr)
+		return true;
+	else return false;
+}
+
+	template <typename Tk, typename Tv>
+	void map<Tk, Tv>::erase(Node<Tk, Tv>*& t, Tk key) {
+
+		if (t == nullptr) return;
+
+		if (t->_myval.first < key)erase(t->right, key);
+		else if (t->_myval.first > key) erase(t->left, key);
+		// found the node
+		//if it has two children
+		else if (t->left != nullptr && t->right != nullptr) {
+			Node<Tk, Tv>* min = findMin(t->right);
+			t->_myval = min->_myval;
+			erase(t->right, min->_myval.first);
+		}
+		//if it has at most one  child
+		else {
+			Node<Tk, Tv>* old = t;
+			if (t->left != nullptr) {
+				t->left->parent = t->parent;
+
+			}
+			if (t->right != nullptr) {
+				t->right->parent = t->parent;
+			}
+			t = (t->left != nullptr) ? t->left : t->right;
+			if (head->left == old)head->left = findMin(head->parent);
+			if (head->right == old) head->right = findMax(head->parent);
+			delete old;
+		}
+
+	}
+
 template <typename Tk, typename Tv>
 void map<Tk, Tv>::erase(Tk key) {
 	// head->parent is the root of the tree
