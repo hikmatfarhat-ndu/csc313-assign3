@@ -8,11 +8,13 @@
 #include "catch.hpp"
 
 
-TEST_CASE("Test0", "0") {
+TEST_CASE("check_basic", "0") {
 	std::vector<std::pair<std::string,int>> v { {"one",90},{"two",94},{"three",88},{"four",65}};
 	map<std::string,double> m;
+	//checks if insert is implemented
 	for(auto& x:v)
 		m.insert(x);	
+	//tests using inorder
 	std::string r1=m.inorder();
 	std::sort(v.begin(),v.end(),[](auto p,auto q){return p.first<q.first;});
 	std::string r2="";
@@ -22,15 +24,15 @@ TEST_CASE("Test0", "0") {
 	REQUIRE(r1==r2);
 
 }
-TEST_CASE("Test1", "1") {
+TEST_CASE("check_next", "1") {
 	std::vector<std::pair<std::string, int>> v{ {"one",90},{"two",94},{"three",88},{"four",65} };
 	map<std::string, double> m;
 	for (auto& x : v)
 		m.insert(x);
 	std::string r1 = "";
-	auto itr = m.begin();
-	while (itr != m.end()) {
-		r1 += itr->key;
+	auto itr = m.begin(10);
+	while (itr != m.end(10)) {
+		r1 += itr->_myval.first;
 		itr = m.next(itr);
 	}
 	/* sort */
@@ -43,16 +45,16 @@ TEST_CASE("Test1", "1") {
 	
 }
 
-TEST_CASE("Test2", "2") {
+TEST_CASE("check_prev", "2") {
 	std::vector<std::pair<std::string, int>> v{ {"one",90},{"two",94},{"three",88},{"four",65} };
 	map<std::string, double> m;
 	for (auto& x : v)
 		m.insert(x);
 	std::string r1 = "";
-	auto itr = m.end();
-	while (itr != m.begin()) {
+	auto itr = m.end(10);
+	while (itr != m.begin(10)) {
 		itr = m.prev(itr);
-		r1 += itr->key;
+		r1 += itr->_myval.first;
 	}
 	/* reverse sort */
 	std::sort(v.begin(), v.end(), [](auto p, auto q) {return p.first > q.first; });
