@@ -8,8 +8,9 @@
 //#include <map>
 //using namespace std;
 
-int main(int argc, const char* argv[])
+int main()
 {
+
 	::map<int, int> m;
 	m.insert({ 10,1 });
 	m.insert({ 20,2 });
@@ -36,5 +37,6 @@ int main(int argc, const char* argv[])
 	(++i)->second = 333;
 
 	std::cout <<"\n"<< i->first << "," << i->second << std::endl;
+
 }
 
